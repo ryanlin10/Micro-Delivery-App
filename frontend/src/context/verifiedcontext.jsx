@@ -7,7 +7,10 @@ export function useVerified() {
 }
 
 export const VerifiedProvider = ({ children }) => {
-    const [verified, setVerified] = useState(false);
+    const email = localStorage.getItem('email');
+    const initialVerifiedStatus = localStorage.getItem(`verificationStatus_${email}`) === 'false';
+    const [verified, setVerified] = useState(initialVerifiedStatus);
+
     return (
         <VerifiedContext.Provider value={{ verified, setVerified }}>
             {children}

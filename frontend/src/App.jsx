@@ -27,6 +27,8 @@ function App(){
   )
 }
 
+
+
 function AppContent() {
   
   const { setIsAuth } = useAuth();
@@ -34,6 +36,8 @@ function AppContent() {
   const token = localStorage.getItem('token');
   const verificationStatus = localStorage.getItem('verificationStatus');
   
+ 
+
   useEffect(() => {
     if(token){
       setIsAuth(true);

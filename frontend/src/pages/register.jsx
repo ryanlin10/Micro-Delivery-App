@@ -34,7 +34,8 @@ function Register() {
             
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user.username));
-            navigate('/UserProfile');
+            localStorage.setItem('email', JSON.stringify(response.data.user.email));
+            navigate('/User');
             setIsAuth(true);
         } catch (error) {
             console.error('Error:', error.response?.data);

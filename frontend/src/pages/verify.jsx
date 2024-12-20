@@ -29,7 +29,8 @@ function Verify() {
     const handleVerify = () => {
         if (verificationCode === verificationinput) {
             setMessage('Email verified, you can now sell items');
-            localStorage.setItem('verificationStatus', 'true');
+            localStorage.setItem(`verificationStatus_${email}`, 'true');
+            setVerified(true);
             navigate('/sell');
         } else {
             setMessage('Invalid verification code');
