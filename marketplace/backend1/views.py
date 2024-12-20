@@ -15,6 +15,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from rest_framework import viewsets
 from .serializers import ProductSerializer
+from rest_framework.decorators import action
+from rest_framework import permissions
 
 @api_view(['POST'])
 def register_user(request):
@@ -150,7 +152,7 @@ def sell_product(request):
         name = request.data.get('name')
         description = request.data.get('description')
         price = request.data.get('price')
-        image = request.data.get('image')
+        image = request.FILES.get('image')
 
         Product.objects.create(
             seller=seller,
@@ -168,3 +170,8 @@ def sell_product(request):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context

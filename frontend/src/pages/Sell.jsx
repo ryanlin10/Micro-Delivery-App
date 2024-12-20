@@ -32,7 +32,8 @@ function Sell(){
              }, {
                 headers: {
                     'Authorization': `Token ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'multipart/form-data'
+
                 },
                 withCredentials: true
              });
@@ -49,6 +50,13 @@ function Sell(){
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
+        });
+    }
+
+    const handleFileChange = (e) => {
+        setFormData({
+            ...formData,
+            image: e.target.files[0],
         });
     }
 
@@ -71,7 +79,7 @@ function Sell(){
                 <input type="text" placeholder="Description" name="description" onChange={handleChange} value = {description} />
                 <input type="number" placeholder="Price" name="price" onChange={handleChange} value = {price} />
                 <input type="number" placeholder="Quantity" name="quantity" onChange={handleChange} value = {quantity} />
-                <input type="file" placeholder="Image" name="image" onChange={handleChange} value = {image} />
+                <input type="file" placeholder="Image" name="image" onChange={handleFileChange} accept="image/*" />
                 <button type="submit">Sell</button>
             </form>
         </div>
