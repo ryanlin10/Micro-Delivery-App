@@ -11,7 +11,7 @@ function Verify() {
     const [verificationinput, setVerificationInput] = useState('');
     const [clicked, setClicked] = useState(false);
     const { setVerified } = useVerified();
-
+    const verification_url = 'http://localhost:8000/backend1/verification-status/';
     const handleSubmit = async (e) => {
         e.preventDefault();
         setClicked(true);
@@ -26,12 +26,21 @@ function Verify() {
         }
     };
     
-    const handleVerify = () => {
+    const handleVerify = async () => {
         if (verificationCode === verificationinput) {
-            setMessage('Email verified, you can now sell items');
-            localStorage.setItem(`verificationStatus_${email}`, 'true');
-            setVerified(true);
-            navigate('/sell');
+            try {
+                await axios.post(verification_url, { user: localStorage.getItem('user'), email, verification_status: 'verified' }, {
+                    headers: {
+                        'Authorization': `Token ${localStorage.getItem('token')}`
+                    }
+                });
+                setMessage('Email verified, you can now sell items');
+                setVerified(true);
+                navigate('/sell');
+            } catch (error) {
+                console.error('Verification error:', error);
+                setMessage('Error verifying email');
+            }
         } else {
             setMessage('Invalid verification code');
         }

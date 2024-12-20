@@ -17,6 +17,7 @@ import { useAuth } from './context/authcontext';
 import { useEffect } from 'react';
 import { VerifiedProvider } from './context/verifiedcontext';
 import { useVerified } from './context/verifiedcontext';
+import axios from 'axios';
 function App(){
   return(
     <AuthProvider>
@@ -34,20 +35,24 @@ function AppContent() {
   const { setIsAuth } = useAuth();
   const { setVerified } = useVerified();
   const token = localStorage.getItem('token');
-  const verificationStatus = localStorage.getItem('verificationStatus');
-  
- 
 
   useEffect(() => {
-    if(token){
+    if (token) {
       setIsAuth(true);
+      // Fetch verification status from the API
+      axios.get('http://localhost:8000/backend1/verification-status/', {
+        headers: {
+          'Authorization': `Token ${token}`
+        }
+      })
+      .then(response => {
+        setVerified(response.data.verification_status === 'verified');
+      })
+      .catch(error => {
+        console.error('Error fetching verification status:', error);
+      });
     }
-
-    if(verificationStatus === 'true'){
-      setVerified(true);
-    }
-    
-  }, [token, verificationStatus]);
+  }, [token, setIsAuth, setVerified]);
 
 
   return (

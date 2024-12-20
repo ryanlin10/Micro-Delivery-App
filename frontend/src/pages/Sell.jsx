@@ -63,14 +63,15 @@ function Sell(){
     return(
         <>
         <div style = {{display: !verified ? 'block' : 'none'}}>
-            <h1>You need to verify your email to sell items</h1>
+            <h1>You need to verify your email to Buy Things</h1>
             <button onClick={() => navigate('/verify')}>Verify Email</button>
         </div>
         <div style={{display: verified ? 'block' : 'none'}}>
-            <h1>Sell your items</h1>
+            <h1>Buy your item</h1>
         </div>
         <div className="sell-description">
-            <p>Register your items to sell below</p>
+            <p>Local deliverers will bring it shortly</p>
+            <p>Enter the details of the item you would like to buy</p>
         </div>
 
         <div className="sell-form">
@@ -79,8 +80,7 @@ function Sell(){
                 <input type="text" placeholder="Description" name="description" onChange={handleChange} value = {description} />
                 <input type="number" placeholder="Price" name="price" onChange={handleChange} value = {price} />
                 <input type="number" placeholder="Quantity" name="quantity" onChange={handleChange} value = {quantity} />
-                <input type="file" placeholder="Image" name="image" onChange={handleFileChange} accept="image/*" />
-                <button type="submit">Sell</button>
+                <button type="submit">Buy Item</button>
             </form>
         </div>
         <div className="error-message">

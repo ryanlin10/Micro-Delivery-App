@@ -17,7 +17,7 @@ from rest_framework import viewsets
 from .serializers import ProductSerializer
 from rest_framework.decorators import action
 from rest_framework import permissions
-
+from .models import Verification
 @api_view(['POST'])
 def register_user(request):
     try:
@@ -175,3 +175,24 @@ class ProductViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
+    
+@api_view(['POST', 'GET'])
+@permission_classes([IsAuthenticated])
+def verification_status(request):
+    user = request.user
+    if request.method == 'POST':
+        email = request.data.get('email')
+        verification_status = request.data.get('verification_status')
+        try:
+            verification = Verification.objects.get(user=user)
+            verification.verification_status = verification_status
+            verification.save()
+            return Response({'message': 'Email verified'}, status=status.HTTP_200_OK)
+        except Verification.DoesNotExist:
+            return Response({'error': 'Verification record not found'}, status=status.HTTP_404_NOT_FOUND)
+    else:  # GET request
+        try:
+            verification = Verification.objects.get(user=user)
+            return Response({'verification_status': verification.verification_status}, status=status.HTTP_200_OK)
+        except Verification.DoesNotExist:
+            return Response({'error': 'Verification record not found'}, status=status.HTTP_404_NOT_FOUND)

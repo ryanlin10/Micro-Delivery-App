@@ -29,13 +29,13 @@ function AuthNavbar() {
                     to="/marketplace"
                     className={location.pathname === '/marketplace' ? 'active' : ''}
                 >
-                    Marketplace
+                    Deliveries
                 </Link>
                 <Link 
                     to="/sell"
                     className={location.pathname === '/sell' ? 'active' : ''}
                 >
-                    Sell
+                    Buy
                 </Link>
                 <button onClick={handleLogout} className="logout-button">Logout</button>
                 
