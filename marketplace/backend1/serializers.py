@@ -9,14 +9,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     seller = UserSerializer(read_only=True)
-    image_url = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'image', 'seller', 'created_at', 'image_url']
+        fields = ['id', 'name', 'description', 'price', 'seller', 'created_at', 'dropoff_location', 'pickup_location']
 
-    def get_image_url(self, obj):
-        if obj.image:
-            request = self.context.get('request')
-            return request.build_absolute_uri(obj.image.url)
-        return None

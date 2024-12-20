@@ -17,6 +17,7 @@ import { useAuth } from './context/authcontext';
 import { useEffect } from 'react';
 import { VerifiedProvider } from './context/verifiedcontext';
 import { useVerified } from './context/verifiedcontext';
+import Mydeliveries from './pages/mydeliveries';
 import axios from 'axios';
 function App(){
   return(
@@ -71,6 +72,7 @@ function AppContent() {
             <Route path="/sell" element={<ProtectedRoute><><AuthNavbar /><Sell /></></ProtectedRoute>} />
             <Route path="/thankyou" element={<Thankyou />} />
             <Route path="/verify" element={<Verify />} />
+            <Route path="/mydeliveries" element={<ProtectedRoute><><AuthNavbar /><Mydeliveries /></></ProtectedRoute>} />
           </Routes>
         </div>
         </BrowserRouter>

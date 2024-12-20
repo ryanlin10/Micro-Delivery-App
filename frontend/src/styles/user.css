@@ -1,0 +1,26 @@
+/* Add this to your CSS file, e.g., user.css */
+.stripe-customer-id-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.stripe-customer-id-input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.stripe-customer-id-button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.stripe-customer-id-button:hover {
+    background-color: #0056b3;
+}

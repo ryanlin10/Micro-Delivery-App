@@ -29,7 +29,13 @@ function AuthNavbar() {
                     to="/marketplace"
                     className={location.pathname === '/marketplace' ? 'active' : ''}
                 >
-                    Deliveries
+                    Open Deliveries
+                </Link>
+                <Link 
+                    to="/mydeliveries"
+                    className={location.pathname === '/mydeliveries' ? 'active' : ''}
+                >
+                    My Deliveries
                 </Link>
                 <Link 
                     to="/sell"

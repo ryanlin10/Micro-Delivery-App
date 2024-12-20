@@ -17,7 +17,7 @@ from rest_framework import viewsets
 from .serializers import ProductSerializer
 from rest_framework.decorators import action
 from rest_framework import permissions
-from .models import Verification
+from .models import Verification, Mydeliveries
 @api_view(['POST'])
 def register_user(request):
     try:
@@ -152,14 +152,16 @@ def sell_product(request):
         name = request.data.get('name')
         description = request.data.get('description')
         price = request.data.get('price')
-        image = request.FILES.get('image')
+        dropoff_location = request.data.get('dropoff_location')
+        pickup_location = request.data.get('pickup_location')
 
         Product.objects.create(
             seller=seller,
             name=name,
             description=description,
             price=price,
-            image=image
+            dropoff_location=dropoff_location,
+            pickup_location=pickup_location
         )
         return Response({'message': 'Product listed successfully'}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -196,3 +198,10 @@ def verification_status(request):
             return Response({'verification_status': verification.verification_status}, status=status.HTTP_200_OK)
         except Verification.DoesNotExist:
             return Response({'error': 'Verification record not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def mydeliveries(request):
+    user = request.user
+    mydeliveries = Mydeliveries.objects.filter(user=user).values('product')
+    return Response({'mydeliveries': mydeliveries}, status=status.HTTP_200_OK)

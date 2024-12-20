@@ -25,27 +25,24 @@ function Marketplace(){
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
-
+    
+    if (buttonClicked) {
+        navigate('/');
+    }
     return(
         <div>
-            <h1>Marketplace</h1>
+            <h1>Open Deliveries</h1>
             <p>Site still in development</p>
             <div className='post1'>
                 {products.map(product => {
-                    console.log('Product image_url:', product.image_url);
                     return (
                         <div key={product.id}>
                             <h2>{product.name}</h2>
                             <p>{product.description}</p>
                             <p>${product.price}</p>
-                            {product.image_url && (
-                                <img 
-                                    src={product.image_url} 
-                                    alt={product.name}
-                                    style={{ maxWidth: '200px' }}
-                                    onError={(e) => console.error('Image loading error:', e)}
-                                />
-                            )}
+                            <p>Dropoff Location: {product.dropoff_location}</p>
+                            <p>Pickup Location: {product.pickup_location}</p>
+                            <button style={{width: '100px'}}>Accept Delivery</button>
                         </div>
                     );
                 })}

@@ -12,8 +12,9 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    dropoff_location = models.CharField(max_length=100, default='Balliol College')
+    pickup_location = models.CharField(max_length=100, default='Cornmarket Street')
     
     class Meta:
         ordering = ['-created_at']
@@ -58,3 +59,23 @@ class Verification(models.Model):
 def create_user_verification(sender, instance, created, **kwargs):
     if created:
         Verification.objects.create(user=instance, email=instance.email)
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    stripe_customer_id = models.CharField(max_length=100, blank=True, null=True)
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
+
+class Mydeliveries(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mydeliveries')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='mydeliveries')
+    created_at = models.DateTimeField(auto_now_add=True)
