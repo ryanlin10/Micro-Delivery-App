@@ -14,7 +14,10 @@ function Sell() {
         description: '',
         price: '',
         quantity: '',
-
+        pickup_location_name: '',
+        dropoff_location: '',
+        pickup_location: '',
+        dropoff_coordinates: ''
     });
     const [message, setMessage] = useState(null);
     const navigate = useNavigate();
@@ -22,7 +25,8 @@ function Sell() {
         latitude: null,
         longitude: null
     });
-    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [selectedPickupLocation, setSelectedPickupLocation] = useState(null);
+    const [selectedDropoffLocation, setSelectedDropoffLocation] = useState(null);
     const [mapCenter, setMapCenter] = useState({
         lat: coordinates.latitude || 37.7749,
         lng: coordinates.longitude || -122.4194
@@ -117,19 +121,32 @@ function Sell() {
     };
 
     const mapStyles = {
-        height: "400px",
-        width: "100%"
+        height: "300px",
+        width: "100%",
+        marginBottom: "20px"
     };
 
-    const onMapClick = useCallback((event) => {
-        setSelectedLocation({
+    const onPickupMapClick = useCallback((event) => {
+        const newLocation = {
             lat: event.latLng.lat(),
             lng: event.latLng.lng()
-        });
-        // Update the pickup_location in formData
+        };
+        setSelectedPickupLocation(newLocation);
         setFormData(prev => ({
             ...prev,
-            pickup_location: `${event.latLng.lat()},${event.latLng.lng()}`
+            pickup_location: `${newLocation.lat},${newLocation.lng}`
+        }));
+    }, []);
+
+    const onDropoffMapClick = useCallback((event) => {
+        const newLocation = {
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng()
+        };
+        setSelectedDropoffLocation(newLocation);
+        setFormData(prev => ({
+            ...prev,
+            dropoff_coordinates: `${newLocation.lat},${newLocation.lng}`
         }));
     }, []);
 
@@ -149,41 +166,43 @@ function Sell() {
 
             <div className="sell-form">
                 <form onSubmit={handleSubmit}>
-                    <input type="text" placeholder="Name of Product" name="name" onChange={handleChange} value={name} />
-                    <input type="text" placeholder="Description" name="description" onChange={handleChange} value={description} />
-                    <input type="number" placeholder="Price" name="price" onChange={handleChange} value={price} />
-                    <input type="number" placeholder="Quantity" name="quantity" onChange={handleChange} value={quantity} />
-                    <input type="text" placeholder="Dropoff Location" name="dropoff_location" onChange={handleChange} value={dropoff_location} />
-                    <input type="text" placeholder="Pickup Location" name="pickup_location" onChange={handleChange} value={pickup_location} />
-                    <p>Delivery fee: ${(price*quantity*0.1).toFixed(2)}</p>
-                    <p>Commission: ${(price*quantity*0.05).toFixed(2)}</p>
-                    <p>Total cost: ${Math.round(price*quantity + price*quantity*0.1 + price*quantity*0.05)}</p>
+                    <input type="text" placeholder="Name of Product (e.g. Tesco's meal deal)" name="name" onChange={handleChange} value={name} />
+                    <input type="text" placeholder="Description (e.g. prawn cocktail sandwich, bbq fridge raiders, diet coke)" name="description" onChange={handleChange} value={description} />
+                    <input type="number" placeholder="Price in GBP (e.g. 3.60)" name="price" onChange={handleChange} value={price} />
+                    <input type="number" placeholder="Quantity (e.g. 1)" name="quantity" onChange={handleChange} value={quantity} />
+                    <input 
+                        type="text" 
+                        placeholder="Pickup Location Name (e.g. Tesco Express)" 
+                        name="pickup_location_name" 
+                        onChange={handleChange} 
+                        value={formData.pickup_location_name}
+                    />
+                    <input type="text" placeholder="Dropoff Location Name (e.g. Balliol College)" name="dropoff_location" onChange={handleChange} value={dropoff_location} />
+                    <p>Delivery fee: £{(price*quantity*0.1).toFixed(2)}</p>
+                    <p>Commission: £{(price*quantity*0.05).toFixed(2)}</p>
+                    <p>Total cost: £{Math.round(price*quantity + price*quantity*0.1 + price*quantity*0.05)}</p>
+                    <h4>Select Item Pickup Location:</h4>
                     <div className="map-container">
                         <LoadScript googleMapsApiKey="AIzaSyAlRa-IrhCYiCJKReDOHsEspQffGMY2DtU">
                             <GoogleMap
                                 mapContainerStyle={mapStyles}
-                                zoom={13}
+                                zoom={15}
                                 center={mapCenter}
-                                onClick={onMapClick}
+                                onClick={onPickupMapClick}
                             >
-                                <Marker
-                                    position={mapCenter}
-                                    icon={{
-                                        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-                                    }}
-                                />
-                                {selectedLocation && (
+                                {selectedPickupLocation && (
                                     <Marker
-                                        position={selectedLocation}
+                                        position={selectedPickupLocation}
                                         draggable={true}
                                         onDragEnd={(e) => {
-                                            setSelectedLocation({
+                                            const newLocation = {
                                                 lat: e.latLng.lat(),
                                                 lng: e.latLng.lng()
-                                            });
+                                            };
+                                            setSelectedPickupLocation(newLocation);
                                             setFormData(prev => ({
                                                 ...prev,
-                                                pickup_location: `${e.latLng.lat()},${e.latLng.lng()}`
+                                                pickup_location: `${newLocation.lat},${newLocation.lng}`
                                             }));
                                         }}
                                     />
@@ -192,8 +211,42 @@ function Sell() {
                         </LoadScript>
                     </div>
                     <div className="location-display">
-                        {selectedLocation && (
+                        {selectedPickupLocation && (
                             <p>Selected Pickup Location: {formData.pickup_location}</p>
+                        )}
+                    </div>
+                    <h4>Select Item Dropoff Location:</h4>
+                    <div className="map-container">
+                        <LoadScript googleMapsApiKey="AIzaSyAlRa-IrhCYiCJKReDOHsEspQffGMY2DtU">
+                            <GoogleMap
+                                mapContainerStyle={mapStyles}
+                                zoom={17}
+                                center={mapCenter}
+                                onClick={onDropoffMapClick}
+                            >
+                                {selectedDropoffLocation && (
+                                    <Marker
+                                        position={selectedDropoffLocation}
+                                        draggable={true}
+                                        onDragEnd={(e) => {
+                                            const newLocation = {
+                                                lat: e.latLng.lat(),
+                                                lng: e.latLng.lng()
+                                            };
+                                            setSelectedDropoffLocation(newLocation);
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                dropoff_coordinates: `${newLocation.lat},${newLocation.lng}`
+                                            }));
+                                        }}
+                                    />
+                                )}
+                            </GoogleMap>
+                        </LoadScript>
+                    </div>
+                    <div className="location-display">
+                        {selectedDropoffLocation && (
+                            <p>Selected Dropoff Location: {formData.dropoff_coordinates}</p>
                         )}
                     </div>
                     <button type="submit">Place Order</button>

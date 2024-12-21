@@ -14,10 +14,10 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             'id', 'name', 'description', 'price', 'seller', 
-            'created_at', 'dropoff_location', 'pickup_location', 
-            'pickup_latitude', 'pickup_longitude',
-            'authentication_code', 'quantity', 
-            'buyer_latitude', 'buyer_longitude', 'status'
+            'created_at', 'dropoff_location', 'pickup_location',
+            'pickup_location_name', 'pickup_latitude', 'pickup_longitude',
+            'dropoff_coordinates', 'authentication_code', 'quantity', 
+            'status'
         ]
 
 class ActiveDeliverySerializer(serializers.ModelSerializer):
