@@ -163,7 +163,7 @@ def sell_product(request):
         buyer_longitude = request.data.get('buyer_longitude')
         delivery_fee = float(price)*float(quantity)*0.1
         commission = float(price)*float(quantity)*0.05
-        
+
         total_cost = float(price)*float(quantity) + delivery_fee + commission
 
         profile = Profile.objects.get(user=seller)
@@ -267,6 +267,11 @@ def accept_delivery(request):
         product = Product.objects.get(id=product_id)
         product.status = 'accepted'
         product.save()
+        profile = Profile.objects.get(user=user)
+        profile.delivering_status = True
+        profile.deliverer = user
+        
+        profile.save()
 
         return Response({'message': 'Delivery accepted'}, status=status.HTTP_200_OK)
 
@@ -339,6 +344,11 @@ def delivery_authentication(request):
             profile.save()
             product.status = 'delivered'
             product.save()
+
+            if ActiveDelivery.objects.filter(deliverer=request.user).count() == 0:
+                profile.delivering_status = False
+                profile.save()
+
             return Response({'message': 'success'}, status=status.HTTP_200_OK)
         else:
             return Response(

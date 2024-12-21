@@ -19,18 +19,13 @@ function ActiveDelivery() {
             })
             .then(response => {
                 setDeliveries(response.data);
+                setDelivering(response.data.length > 0);
                 setLoading(false);
             })
             .catch(err => {
                 setError(err.message);
                 setLoading(false);
             });
-
-        if (deliveries.length === 0) {
-            setDelivering(false);
-        }else{
-            setDelivering(true);
-        }
     }, []);
 
     if (loading) return <div>Loading...</div>;
