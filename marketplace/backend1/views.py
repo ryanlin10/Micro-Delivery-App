@@ -315,8 +315,8 @@ def delivery_authentication(request):
         if product.authentication_code == code:
             active_delivery.delete()
             profile = Profile.objects.get(user=request.user)
-            delivery_fee = int(product.price)*int(product.quantity)*0.1
-            profile.credit = profile.credit + delivery_fee + product.price*product.quantity
+            delivery_fee = float(product.price)*int(product.quantity)*0.1
+            profile.credit = float(profile.credit) + float(delivery_fee) + float(product.price)*float(product.quantity)
             profile.save()
             product.status = 'delivered'
             product.save()

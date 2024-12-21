@@ -60,7 +60,7 @@ def create_user_verification(sender, instance, created, **kwargs):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     stripe_customer_id = models.CharField(max_length=100, blank=True, null=True)
-    credit = models.IntegerField(default=0)
+    credit = models.FloatField(default=0)
     delivering_status = models.BooleanField(default=False)
 
 @receiver(post_save, sender=User)
