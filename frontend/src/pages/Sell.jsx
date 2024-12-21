@@ -1,9 +1,11 @@
 import '../styles/sell.css';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVerified } from '../context/verifiedcontext';
 import { useEffect } from 'react';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+
 function Sell() {
     const { verified } = useVerified();
     const url = 'http://localhost:8000/backend1/sell/';
@@ -20,7 +22,12 @@ function Sell() {
         latitude: null,
         longitude: null
     });
-    
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [mapCenter, setMapCenter] = useState({
+        lat: coordinates.latitude || 37.7749,
+        lng: coordinates.longitude || -122.4194
+    });
+
     const { name, description, price, quantity, dropoff_location, pickup_location} = formData;
     useEffect(() => {
         if (verified === false) {
@@ -45,6 +52,16 @@ function Sell() {
             setMessage("Your browser doesn't support location services");
         }
     }, [verified]);
+
+    useEffect(() => {
+        if (coordinates.latitude && coordinates.longitude) {
+            setMapCenter({
+                lat: coordinates.latitude,
+                lng: coordinates.longitude
+            });
+        }
+    }, [coordinates.latitude, coordinates.longitude]);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -99,6 +116,23 @@ function Sell() {
         }
     };
 
+    const mapStyles = {
+        height: "400px",
+        width: "100%"
+    };
+
+    const onMapClick = useCallback((event) => {
+        setSelectedLocation({
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng()
+        });
+        // Update the pickup_location in formData
+        setFormData(prev => ({
+            ...prev,
+            pickup_location: `${event.latLng.lat()},${event.latLng.lng()}`
+        }));
+    }, []);
+
     return (
         <>
             <div style={{ display: !verified ? 'block' : 'none' }}>
@@ -124,6 +158,44 @@ function Sell() {
                     <p>Delivery fee: ${(price*quantity*0.1).toFixed(2)}</p>
                     <p>Commission: ${(price*quantity*0.05).toFixed(2)}</p>
                     <p>Total cost: ${Math.round(price*quantity + price*quantity*0.1 + price*quantity*0.05)}</p>
+                    <div className="map-container">
+                        <LoadScript googleMapsApiKey="AIzaSyAlRa-IrhCYiCJKReDOHsEspQffGMY2DtU">
+                            <GoogleMap
+                                mapContainerStyle={mapStyles}
+                                zoom={13}
+                                center={mapCenter}
+                                onClick={onMapClick}
+                            >
+                                <Marker
+                                    position={mapCenter}
+                                    icon={{
+                                        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                                    }}
+                                />
+                                {selectedLocation && (
+                                    <Marker
+                                        position={selectedLocation}
+                                        draggable={true}
+                                        onDragEnd={(e) => {
+                                            setSelectedLocation({
+                                                lat: e.latLng.lat(),
+                                                lng: e.latLng.lng()
+                                            });
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                pickup_location: `${e.latLng.lat()},${e.latLng.lng()}`
+                                            }));
+                                        }}
+                                    />
+                                )}
+                            </GoogleMap>
+                        </LoadScript>
+                    </div>
+                    <div className="location-display">
+                        {selectedLocation && (
+                            <p>Selected Pickup Location: {formData.pickup_location}</p>
+                        )}
+                    </div>
                     <button type="submit">Place Order</button>
                 </form>
             </div>

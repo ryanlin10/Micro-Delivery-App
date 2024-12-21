@@ -20,6 +20,8 @@ class Product(models.Model):
     buyer_latitude = models.DecimalField(max_digits=100, decimal_places=20, null=True, blank=True, default=None)
     buyer_longitude = models.DecimalField(max_digits=100, decimal_places=20, null=True, blank=True, default=None)
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('delivered', 'Delivered'), ('cancelled', 'Cancelled')], default='pending')
+    pickup_latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    pickup_longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     class Meta:
         ordering = ['-created_at']
 

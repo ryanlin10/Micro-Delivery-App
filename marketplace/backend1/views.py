@@ -170,6 +170,15 @@ def sell_product(request):
         if int(profile.credit) < int(total_cost):
             return Response({'error': 'Insufficient credit, please add more money to your account'}, status=status.HTTP_400_BAD_REQUEST)
     
+        # Parse the pickup location string into coordinates
+        if pickup_location:
+            lat, lng = pickup_location.split(',')
+            pickup_latitude = float(lat)
+            pickup_longitude = float(lng)
+        else:
+            pickup_latitude = None
+            pickup_longitude = None
+
         Product.objects.create(
             seller=seller,
             name=name,
@@ -177,6 +186,8 @@ def sell_product(request):
             price=price,
             dropoff_location=dropoff_location,
             pickup_location=pickup_location,
+            pickup_latitude=pickup_latitude,
+            pickup_longitude=pickup_longitude,
             authentication_code=authentication_code,
             quantity=quantity,
             buyer_latitude=buyer_latitude,

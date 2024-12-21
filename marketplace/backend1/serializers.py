@@ -10,10 +10,15 @@ class UserSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     seller = UserSerializer(read_only=True)
 
-
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'seller', 'created_at', 'dropoff_location', 'pickup_location', 'authentication_code', 'quantity', 'buyer_latitude', 'buyer_longitude', 'status']
+        fields = [
+            'id', 'name', 'description', 'price', 'seller', 
+            'created_at', 'dropoff_location', 'pickup_location', 
+            'pickup_latitude', 'pickup_longitude',
+            'authentication_code', 'quantity', 
+            'buyer_latitude', 'buyer_longitude', 'status'
+        ]
 
 class ActiveDeliverySerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
