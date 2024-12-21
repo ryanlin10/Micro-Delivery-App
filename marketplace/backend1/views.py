@@ -266,3 +266,37 @@ class MyOrdersViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def delivery_authentication(request):
+    try:
+        code = int(request.data.get('code'))  # Convert to int since authentication_code is IntegerField
+        product_id = request.data.get('product_id')
+        
+        # Get the product and active delivery in one query to verify both exist
+        product = Product.objects.get(id=product_id)
+        active_delivery = ActiveDelivery.objects.get(
+            deliverer=request.user,
+            product_id=product_id
+        )
+
+        if product.authentication_code == code:
+            active_delivery.delete()
+            return Response({'message': 'success'}, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {'error': 'Invalid authentication code'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    except (Product.DoesNotExist, ActiveDelivery.DoesNotExist):
+        return Response(
+            {'error': 'Product or active delivery not found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    except ValueError:
+        return Response(
+            {'error': 'Invalid code format'},
+            status=status.HTTP_400_BAD_REQUEST
+        )

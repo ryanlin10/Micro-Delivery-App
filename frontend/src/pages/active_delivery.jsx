@@ -7,6 +7,7 @@ function ActiveDelivery() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [code, setCode] = useState('');
+    const token = localStorage.getItem('token');
     useEffect(() => {
         const token = localStorage.getItem('token');
         axios
@@ -26,18 +27,40 @@ function ActiveDelivery() {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
-    const handleAcceptDelivery = (deliveryId) => {
+    const handleAcceptDelivery = async (e, delivery) => {
+        e.preventDefault(); // Prevent default form submission
         const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        try {
+            const response = await axios.post(
+                'http://localhost:8000/backend1/delivery_authentication/',
+                {
+                    code: code,
+                    product_id: delivery.product.id,
+                    user: user
+                },
+                {
+                    headers: { Authorization: `Token ${token}` }
+                }
+            );
 
-        const response = axios.post(`http://localhost:8000/backend1/delivery_authentication/`, {
-            headers: { Authorization: `Token ${token}` }, 
-            code: code
-        });
-        console.log(response);
+            if (response.data.message === 'success') {
+                alert('Delivery accepted');
+                // Optionally, update the state to remove the completed delivery
+                setDeliveries(deliveries.filter(d => d.id !== delivery.id));
+            } else {
+                alert('Delivery failed');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('An error occurred while completing the delivery');
+        }
     };
+
     const handleChange = (e) => {
         setCode(e.target.value);
     };
+
     return (
         <div className="active-delivery">
             <h1>Active Deliveries</h1>
@@ -51,9 +74,9 @@ function ActiveDelivery() {
                         <p>Price: {delivery.product?.price}</p>
                         <p>Dropoff Location: {delivery.product?.dropoff_location}</p>
                         <p>Pickup Location: {delivery.product?.pickup_location}</p>
-                        <form onSubmit={handleAcceptDelivery(delivery.id)}>
-                            <input type = "text" placeholder = "Enter authentication code from customer" name = "code" onChange={handleChange} value={code}/>
-                            <button type = "submit">Complete Delivery</button>
+                        <form onSubmit={(e) => handleAcceptDelivery(e, delivery)}>
+                            <input type="text" placeholder="Enter authentication code from customer" name="code" onChange={handleChange} value={code} />
+                            <button type="submit">Complete Delivery</button>
                         </form>
                     </div>
                 ))
