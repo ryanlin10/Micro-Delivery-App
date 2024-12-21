@@ -112,8 +112,8 @@ function Sell() {
                     <input type="number" placeholder="Quantity" name="quantity" onChange={handleChange} value={quantity} />
                     <input type="text" placeholder="Dropoff Location" name="dropoff_location" onChange={handleChange} value={dropoff_location} />
                     <input type="text" placeholder="Pickup Location" name="pickup_location" onChange={handleChange} value={pickup_location} />
-                    <p>Delivery fee: ${Math.round(price*quantity*0.1*100)/100}</p>
-                    <p>Commission: ${Math.round(price*quantity*0.05*100)/100}</p>
+                    <p>Delivery fee: ${(price*quantity*0.1).toFixed(2)}</p>
+                    <p>Commission: ${(price*quantity*0.05).toFixed(2)}</p>
                     <p>Total cost: ${Math.round(price*quantity + price*quantity*0.1 + price*quantity*0.05)}</p>
                     <button type="submit">Place Order</button>
                 </form>
