@@ -25,10 +25,13 @@ function Sell() {
             [e.target.name]: e.target.value,
         });
     };
-
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        if (verified === false) {
+            setMessage('You need to verify your email to sell items');
+            return;
+        }
         try {
             const response = await axios.post(url, {
                 name,
