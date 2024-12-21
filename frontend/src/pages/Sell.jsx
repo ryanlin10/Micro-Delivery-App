@@ -85,6 +85,15 @@ function Sell() {
             setMessage(response.data.message);
             navigate('/thankyou');
         } catch (error) {
+            if (error.response?.data?.error === 'You do not have enough credit to place this order') {
+                setFormData({
+                    ...formData,
+                    price: '',
+                    quantity: '',
+                    name: '',
+                    description: '',
+                });
+            }
             console.error('Error:', error.response?.data);
             setMessage(error.response?.data?.error || 'An error occurred');
         }

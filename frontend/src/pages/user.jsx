@@ -57,7 +57,7 @@ function User(){
             <p>Page in development</p>
             <p>Username: {localStorage.getItem('user')}</p>
             <p>Email: {localStorage.getItem('email')}</p>
-            <p>Credit: {credit}</p>
+            <p>Credit: {credit.toFixed(2)}</p>
             <button onClick={handleAddCredit}>Add Credit</button>
             <a href="/verify" style={{display: !verified ? 'block' : 'none'}}> Complete your user verification process in order to start selling items</a>
             <p style={{display: verified ? 'block' : 'none'}}>Your email is verified, you can now sell items</p>

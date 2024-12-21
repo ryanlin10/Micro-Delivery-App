@@ -149,6 +149,7 @@ import random
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def sell_product(request):
+    
     try:
         seller = request.user
         name = request.data.get('name')
@@ -160,7 +161,15 @@ def sell_product(request):
         quantity = request.data.get('quantity')
         buyer_latitude = request.data.get('buyer_latitude')
         buyer_longitude = request.data.get('buyer_longitude')
+        delivery_fee = float(price)*float(quantity)*0.1
+        commission = float(price)*float(quantity)*0.05
+        
+        total_cost = float(price)*float(quantity) + delivery_fee + commission
 
+        profile = Profile.objects.get(user=seller)
+        if int(profile.credit) < int(total_cost):
+            return Response({'error': 'Insufficient credit, please add more money to your account'}, status=status.HTTP_400_BAD_REQUEST)
+    
         Product.objects.create(
             seller=seller,
             name=name,
@@ -174,14 +183,13 @@ def sell_product(request):
             buyer_longitude=buyer_longitude
         )
 
-        delivery_fee = int(price)*int(quantity)*0.1
-        commission = int(price)*int(quantity)*0.05
+       
+        
 
-        total_cost = int(price)*int(quantity) + delivery_fee + commission
+        total_cost = float(price)*float(quantity) + delivery_fee + commission
 
-        profile = Profile.objects.get(user=seller)
-        if int(profile.credit) < int(total_cost):
-            return Response({'error': 'Insufficient credit, please add more money to your account'}, status=status.HTTP_400_BAD_REQUEST)
+
+        
         profile.credit = profile.credit - total_cost
         profile.save()
         return Response({'message': 'Product listed successfully'}, status=status.HTTP_200_OK)
