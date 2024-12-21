@@ -79,3 +79,22 @@ class Mydeliveries(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mydeliveries')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='mydeliveries')
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class ActiveDelivery(models.Model):
+    deliverer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='active_deliveries')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='active_deliveries')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class OpenDeliveries(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='open_deliveries')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.product.name} - {self.created_at}"
+    
+@receiver(post_save, sender=Product)
+def create_open_delivery(sender, instance, created, **kwargs):
+    if created:
+        OpenDeliveries.objects.create(product=instance)

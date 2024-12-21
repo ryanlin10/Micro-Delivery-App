@@ -14,10 +14,10 @@ from django.utils.crypto import get_random_string
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from rest_framework import viewsets
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, ActiveDeliverySerializer, MydeliveriesSerializer, OpenDeliveriesSerializer
 from rest_framework.decorators import action
 from rest_framework import permissions
-from .models import Verification, Mydeliveries
+from .models import Verification, Mydeliveries, ActiveDelivery, OpenDeliveries
 @api_view(['POST'])
 def register_user(request):
     try:
@@ -177,7 +177,17 @@ class ProductViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
-    
+
+class OpenDeliveriesViewSet(viewsets.ModelViewSet):
+    serializer_class = OpenDeliveriesSerializer
+    queryset = OpenDeliveries.objects.all() 
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
 @api_view(['POST', 'GET'])
 @permission_classes([IsAuthenticated])
 def verification_status(request):
@@ -199,9 +209,42 @@ def verification_status(request):
         except Verification.DoesNotExist:
             return Response({'error': 'Verification record not found'}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['GET'])
+
+
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def mydeliveries(request):
+def accept_delivery(request):
+    product_id = request.data.get('product_id')
     user = request.user
-    mydeliveries = Mydeliveries.objects.filter(user=user).values('product')
-    return Response({'mydeliveries': mydeliveries}, status=status.HTTP_200_OK)
+    Mydeliveries.objects.create(user=user, product_id=product_id)
+    ActiveDelivery.objects.create(product_id=product_id, deliverer=user)
+    OpenDeliveries.objects.filter(product_id=product_id).delete()
+    return Response({'message': 'Delivery accepted'}, status=status.HTTP_200_OK)
+
+class MydeliveriesViewSet(viewsets.ModelViewSet):
+    serializer_class = MydeliveriesSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Mydeliveries.objects.all()
+
+    def get_queryset(self):
+        # Only return deliveries where the current user is the deliverer
+        return Mydeliveries.objects.filter(user=self.request.user)
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+class ActiveDeliveryViewSet(viewsets.ModelViewSet):
+    serializer_class = ActiveDeliverySerializer
+    permission_classes = [IsAuthenticated]
+    queryset = ActiveDelivery.objects.all()
+
+    def get_queryset(self):
+        # Only return deliveries where the current user is the deliverer
+        return ActiveDelivery.objects.filter(deliverer=self.request.user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context

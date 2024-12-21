@@ -28,6 +28,7 @@ function Navbar() {
                 >
                     Sign Up
                 </Link>
+
                 <Link
                     to="/login"
                     className={location.pathname === '/login' ? 'active' : ''}

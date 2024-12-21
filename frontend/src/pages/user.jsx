@@ -30,7 +30,6 @@ function User(){
                     placeholder="Enter Stripe Customer ID"
                 />
                 <button onClick={handleSaveStripeCustomerId}>Save</button>
-                <p>{localStorage.getItem('stripe_customer_id')}</p>
             </div>
             <a href="/verify" style={{display: !verified ? 'block' : 'none'}}> Complete your user verification process in order to start selling items</a>
             <p style={{display: verified ? 'block' : 'none'}}>Your email is verified, you can now sell items</p>

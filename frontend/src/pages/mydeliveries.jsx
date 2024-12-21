@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function Mydeliveries() {
     const [mydeliveries, setMydeliveries] = useState([]);
-    const url = 'http://localhost:8000/api/mydeliveries/';
+    const url = 'http://localhost:8000/backend1/mydeliveries/';
     const token = localStorage.getItem('token');
     const headers = {
         'Authorization': `Token ${token}`

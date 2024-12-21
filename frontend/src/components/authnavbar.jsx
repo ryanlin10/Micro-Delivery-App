@@ -35,7 +35,13 @@ function AuthNavbar() {
                     to="/mydeliveries"
                     className={location.pathname === '/mydeliveries' ? 'active' : ''}
                 >
-                    My Deliveries
+                    Previous Deliveries
+                </Link>
+                <Link
+                    to = '/active-delivery'
+                    className={location.pathname === '/active-delivery' ? 'active' : ''}
+                >
+                    Active Deliveries
                 </Link>
                 <Link 
                     to="/sell"

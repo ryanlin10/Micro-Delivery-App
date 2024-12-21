@@ -1,17 +1,22 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 function Marketplace(){
-    const [products, setProducts] = useState([]);
+    const [openDeliveries, setOpenDeliveries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+    const navigate = useNavigate();
+    const url = 'http://localhost:8000/backend1/accept-delivery/';
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/backend1/products/');
+                const response = await axios.get('http://localhost:8000/backend1/open-deliveries/', {
+                    headers: {
+                        'Authorization': `Token ${localStorage.getItem('token')}`
+                    }
+                });
                 console.log('Products response:', response.data);
-                setProducts(response.data);
+                setOpenDeliveries(response.data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -26,23 +31,41 @@ function Marketplace(){
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
     
-    if (buttonClicked) {
-        navigate('/');
-    }
+    const handleAcceptDelivery = async (productId) => {
+        navigate(`/active-delivery`);
+        console.log(`Navigating to /active-delivery`);
+
+        try {
+            const response = await axios.post(url, {
+                product_id: productId,
+                status: 'accepted',
+                user: localStorage.getItem('user')
+            }, {
+                headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }
+            });
+            console.log('Accept delivery response:', response.data);
+        } catch (error) {
+            console.error('Error accepting delivery:', error);
+        }
+
+    };
+    
     return(
         <div>
             <h1>Open Deliveries</h1>
             <p>Site still in development</p>
             <div className='post1'>
-                {products.map(product => {
+                {openDeliveries.map(openDelivery => {
                     return (
-                        <div key={product.id}>
-                            <h2>{product.name}</h2>
-                            <p>{product.description}</p>
-                            <p>${product.price}</p>
-                            <p>Dropoff Location: {product.dropoff_location}</p>
-                            <p>Pickup Location: {product.pickup_location}</p>
-                            <button style={{width: '100px'}}>Accept Delivery</button>
+                        <div key={openDelivery.id}>
+                            <h2>{openDelivery.product.name}</h2>
+                            <p>{openDelivery.product.description}</p>
+                            <p>${openDelivery.product.price}</p>
+                            <p>Dropoff Location: {openDelivery.product.dropoff_location}</p>
+                            <p>Pickup Location: {openDelivery.product.pickup_location}</p>
+                            <button style={{width: '100px'}} onClick={() => handleAcceptDelivery(openDelivery.product.id)}>Accept Delivery</button>
                         </div>
                     );
                 })}

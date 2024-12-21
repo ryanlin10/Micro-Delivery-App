@@ -19,6 +19,8 @@ import { VerifiedProvider } from './context/verifiedcontext';
 import { useVerified } from './context/verifiedcontext';
 import Mydeliveries from './pages/mydeliveries';
 import axios from 'axios';
+import ActiveDelivery from './pages/active_delivery';
+
 function App(){
   return(
     <AuthProvider>
@@ -73,6 +75,7 @@ function AppContent() {
             <Route path="/thankyou" element={<Thankyou />} />
             <Route path="/verify" element={<Verify />} />
             <Route path="/mydeliveries" element={<ProtectedRoute><><AuthNavbar /><Mydeliveries /></></ProtectedRoute>} />
+            <Route path="/active-delivery" element={<ProtectedRoute><><AuthNavbar /><ActiveDelivery /></></ProtectedRoute>} /> {/*Dynamic route for accepting delivery*/}
           </Routes>
         </div>
         </BrowserRouter>
