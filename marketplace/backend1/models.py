@@ -17,6 +17,8 @@ class Product(models.Model):
     pickup_location = models.CharField(max_length=100, default='Cornmarket Street')
     authentication_code = models.IntegerField(default=0)
     quantity = models.IntegerField(default=1)
+    buyer_latitude = models.DecimalField(max_digits=100, decimal_places=20, null=True, blank=True, default=None)
+    buyer_longitude = models.DecimalField(max_digits=100, decimal_places=20, null=True, blank=True, default=None)
     
     class Meta:
         ordering = ['-created_at']

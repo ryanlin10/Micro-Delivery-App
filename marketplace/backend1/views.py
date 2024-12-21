@@ -158,6 +158,8 @@ def sell_product(request):
         pickup_location = request.data.get('pickup_location')
         authentication_code = random.randint(1000, 9999)
         quantity = request.data.get('quantity')
+        buyer_latitude = request.data.get('buyer_latitude')
+        buyer_longitude = request.data.get('buyer_longitude')
 
         Product.objects.create(
             seller=seller,
@@ -167,7 +169,9 @@ def sell_product(request):
             dropoff_location=dropoff_location,
             pickup_location=pickup_location,
             authentication_code=authentication_code,
-            quantity=quantity
+            quantity=quantity,
+            buyer_latitude=buyer_latitude,
+            buyer_longitude=buyer_longitude
         )
         return Response({'message': 'Product listed successfully'}, status=status.HTTP_200_OK)
     except Exception as e:

@@ -66,6 +66,8 @@ function Marketplace(){
                             <p>Dropoff Location: {openDelivery.product.dropoff_location}</p>
                             <p>Pickup Location: {openDelivery.product.pickup_location}</p>
                             <p>Quantity: {openDelivery.product.quantity}</p>
+                            <p>Buyer Latitude: {openDelivery.product.buyer_latitude}</p>
+                            <p>Buyer Longitude: {openDelivery.product.buyer_longitude}</p>
                             <button style={{width: '100px'}} onClick={() => handleAcceptDelivery(openDelivery.product.id)}>Accept Delivery</button>
                         </div>
                     );

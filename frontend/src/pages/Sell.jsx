@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useVerified } from '../context/verifiedcontext';
-
+import { useEffect } from 'react';
 function Sell() {
     const { verified } = useVerified();
     const url = 'http://localhost:8000/backend1/sell/';
@@ -16,9 +16,35 @@ function Sell() {
     });
     const [message, setMessage] = useState(null);
     const navigate = useNavigate();
-
+    const [coordinates, setCoordinates] = useState({
+        latitude: null,
+        longitude: null
+    });
+    
     const { name, description, price, quantity, dropoff_location, pickup_location} = formData;
-
+    useEffect(() => {
+        if (verified === false) {
+            setMessage('You need to verify your email to sell items');
+            return;
+        }
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setCoordinates({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    });
+                },
+                (error) => {
+                    console.log("Unable to retrieve location:", error);
+                    setMessage("Please enable location services to continue");
+                }
+            );
+        } else {
+            console.log("Geolocation not supported");
+            setMessage("Your browser doesn't support location services");
+        }
+    }, [verified]);
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -32,6 +58,12 @@ function Sell() {
             setMessage('You need to verify your email to sell items');
             return;
         }
+        
+        if (!coordinates.latitude || !coordinates.longitude) {
+            setMessage('Please enable location services to continue');
+            return;
+        }
+
         try {
             const response = await axios.post(url, {
                 name,
@@ -40,7 +72,8 @@ function Sell() {
                 quantity,
                 dropoff_location,
                 pickup_location,
-       
+                buyer_latitude: coordinates.latitude,
+                buyer_longitude: coordinates.longitude
             }, {
                 headers: {
                     'Authorization': `Token ${localStorage.getItem('token')}`,
