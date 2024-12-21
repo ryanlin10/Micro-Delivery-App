@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 function MyOrders() {
     const [myOrders, setMyOrders] = useState([]);
     const token = localStorage.getItem('token');
     const url = 'http://localhost:8000/backend1/myorders/';
     const user = localStorage.getItem('user');
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchMyOrders = async () => {
             try {
@@ -18,6 +19,10 @@ function MyOrders() {
         fetchMyOrders();
     }, [url, token]);
 
+    const handleAcceptDelivery = async (id) => {
+      navigate('/tracking')
+    };
+
     return (
         <div>
             <h1>My Orders</h1>
@@ -29,6 +34,10 @@ function MyOrders() {
                     <p>Authentication Code: {order.authentication_code}</p>
                     <p>Pickup Location: {order.pickup_location}</p>
                     <p>Dropoff Location: {order.dropoff_location}</p>
+                    <p>Status: {order.status}</p>
+                    {order.status === 'accepted' && (
+                        <button onClick={() => handleAcceptDelivery(order.id)}>Track Delivery</button>
+                    )}
                 </div>
             ))}
         </div>

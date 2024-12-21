@@ -19,7 +19,7 @@ class Product(models.Model):
     quantity = models.IntegerField(default=1)
     buyer_latitude = models.DecimalField(max_digits=100, decimal_places=20, null=True, blank=True, default=None)
     buyer_longitude = models.DecimalField(max_digits=100, decimal_places=20, null=True, blank=True, default=None)
-    
+    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('delivered', 'Delivered'), ('cancelled', 'Cancelled')], default='pending')
     class Meta:
         ordering = ['-created_at']
 

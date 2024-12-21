@@ -240,6 +240,9 @@ def accept_delivery(request):
     Mydeliveries.objects.create(user=user, product_id=product_id)
     ActiveDelivery.objects.create(product_id=product_id, deliverer=user)
     OpenDeliveries.objects.filter(product_id=product_id).delete()
+    product = Product.objects.get(id=product_id)
+    product.status = 'accepted'
+    product.save()
     return Response({'message': 'Delivery accepted'}, status=status.HTTP_200_OK)
 
 class MydeliveriesViewSet(viewsets.ModelViewSet):
@@ -304,6 +307,8 @@ def delivery_authentication(request):
             delivery_fee = product.price*product.quantity*0.1
             profile.credit = profile.credit + delivery_fee + product.price*product.quantity
             profile.save()
+            product.status = 'delivered'
+            product.save()
             return Response({'message': 'success'}, status=status.HTTP_200_OK)
         else:
             return Response(

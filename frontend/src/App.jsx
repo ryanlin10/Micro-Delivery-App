@@ -21,6 +21,8 @@ import Mydeliveries from './pages/mydeliveries';
 import axios from 'axios';
 import ActiveDelivery from './pages/active_delivery';
 import MyOrders from './pages/my_orders';
+import Tracking from './pages/tracking';
+
 function App(){
   return(
     <AuthProvider>
@@ -77,6 +79,7 @@ function AppContent() {
             <Route path="/mydeliveries" element={<ProtectedRoute><><AuthNavbar /><Mydeliveries /></></ProtectedRoute>} />
             <Route path="/active-delivery" element={<ProtectedRoute><><AuthNavbar /><ActiveDelivery /></></ProtectedRoute>} /> {/*Dynamic route for accepting delivery*/}
             <Route path="/myorders" element={<ProtectedRoute><><AuthNavbar /><MyOrders /></></ProtectedRoute>} />
+            <Route path="/tracking" element={<Tracking />} />
           </Routes>
         </div>
         </BrowserRouter>
