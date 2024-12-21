@@ -8,6 +8,9 @@ function ActiveDelivery() {
     const [error, setError] = useState(null);
     const [code, setCode] = useState('');
     const token = localStorage.getItem('token');
+    const [delivering, setDelivering] = useState(false);
+
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         axios
@@ -22,6 +25,12 @@ function ActiveDelivery() {
                 setError(err.message);
                 setLoading(false);
             });
+
+        if (deliveries.length === 0) {
+            setDelivering(false);
+        }else{
+            setDelivering(true);
+        }
     }, []);
 
     if (loading) return <div>Loading...</div>;
@@ -56,6 +65,8 @@ function ActiveDelivery() {
             alert('An error occurred while completing the delivery');
         }
     };
+    
+
 
     const handleChange = (e) => {
         setCode(e.target.value);
@@ -64,6 +75,7 @@ function ActiveDelivery() {
     return (
         <div className="active-delivery">
             <h1>Active Deliveries</h1>
+            <p> Delivering Status: {delivering ? 'Active' : 'Inactive'}</p>
             {deliveries.length === 0 ? (
                 <p>No active deliveries found.</p>
             ) : (

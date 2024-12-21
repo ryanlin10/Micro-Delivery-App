@@ -180,7 +180,7 @@ def sell_product(request):
         total_cost = int(price)*int(quantity) + delivery_fee + commission
 
         profile = Profile.objects.get(user=seller)
-        if profile.credit < total_cost:
+        if int(profile.credit) < int(total_cost):
             return Response({'error': 'Insufficient credit, please add more money to your account'}, status=status.HTTP_400_BAD_REQUEST)
         profile.credit = profile.credit - total_cost
         profile.save()
@@ -235,15 +235,26 @@ def verification_status(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def accept_delivery(request):
-    product_id = request.data.get('product_id')
-    user = request.user
-    Mydeliveries.objects.create(user=user, product_id=product_id)
-    ActiveDelivery.objects.create(product_id=product_id, deliverer=user)
-    OpenDeliveries.objects.filter(product_id=product_id).delete()
-    product = Product.objects.get(id=product_id)
-    product.status = 'accepted'
-    product.save()
-    return Response({'message': 'Delivery accepted'}, status=status.HTTP_200_OK)
+    try:
+        product_id = request.data.get('product_id')
+        user = request.user
+
+        # Create delivery records
+        Mydeliveries.objects.create(user=user, product_id=product_id)
+        ActiveDelivery.objects.create(product_id=product_id, deliverer=user)
+        OpenDeliveries.objects.filter(product_id=product_id).delete()
+
+        # Update product status to accepted
+        product = Product.objects.get(id=product_id)
+        product.status = 'accepted'
+        product.save()
+
+        return Response({'message': 'Delivery accepted'}, status=status.HTTP_200_OK)
+
+    except Product.DoesNotExist:
+        return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class MydeliveriesViewSet(viewsets.ModelViewSet):
     serializer_class = MydeliveriesSerializer
@@ -304,7 +315,7 @@ def delivery_authentication(request):
         if product.authentication_code == code:
             active_delivery.delete()
             profile = Profile.objects.get(user=request.user)
-            delivery_fee = product.price*product.quantity*0.1
+            delivery_fee = int(product.price)*int(product.quantity)*0.1
             profile.credit = profile.credit + delivery_fee + product.price*product.quantity
             profile.save()
             product.status = 'delivered'
