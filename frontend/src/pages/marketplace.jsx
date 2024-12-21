@@ -62,7 +62,8 @@ function Marketplace(){
                         <div key={openDelivery.id}>
                             <h2>{openDelivery.product.name}</h2>
                             <p>{openDelivery.product.description}</p>
-                            <p>${openDelivery.product.price}</p>
+                            <p>Price of product(each): ${openDelivery.product.price}</p>
+                            <p>Commission to be made: ${Math.round(openDelivery.product.price*openDelivery.product.quantity*0.1*100)/100}</p>
                             <p>Dropoff Location: {openDelivery.product.dropoff_location}</p>
                             <p>Pickup Location: {openDelivery.product.pickup_location}</p>
                             <p>Quantity: {openDelivery.product.quantity}</p>

@@ -173,10 +173,16 @@ def sell_product(request):
             buyer_latitude=buyer_latitude,
             buyer_longitude=buyer_longitude
         )
+
+        delivery_fee = int(price)*int(quantity)*0.1
+        commission = int(price)*int(quantity)*0.05
+
+        total_cost = int(price)*int(quantity) + delivery_fee + commission
+
         profile = Profile.objects.get(user=seller)
-        if profile.credit < int(price)*int(quantity):
+        if profile.credit < total_cost:
             return Response({'error': 'Insufficient credit, please add more money to your account'}, status=status.HTTP_400_BAD_REQUEST)
-        profile.credit = profile.credit - int(price)*int(quantity)
+        profile.credit = profile.credit - total_cost
         profile.save()
         return Response({'message': 'Product listed successfully'}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -295,7 +301,8 @@ def delivery_authentication(request):
         if product.authentication_code == code:
             active_delivery.delete()
             profile = Profile.objects.get(user=request.user)
-            profile.credit = profile.credit +product.price*product.quantity
+            delivery_fee = product.price*product.quantity*0.1
+            profile.credit = profile.credit + delivery_fee + product.price*product.quantity
             profile.save()
             return Response({'message': 'success'}, status=status.HTTP_200_OK)
         else:
