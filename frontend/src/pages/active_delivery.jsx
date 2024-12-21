@@ -74,6 +74,7 @@ function ActiveDelivery() {
                         <p>Price: {delivery.product?.price}</p>
                         <p>Dropoff Location: {delivery.product?.dropoff_location}</p>
                         <p>Pickup Location: {delivery.product?.pickup_location}</p>
+                        <p>Quantity: {delivery.product?.quantity}</p>
                         <form onSubmit={(e) => handleAcceptDelivery(e, delivery)}>
                             <input type="text" placeholder="Enter authentication code from customer" name="code" onChange={handleChange} value={code} />
                             <button type="submit">Complete Delivery</button>

@@ -39,6 +39,7 @@ function Mydeliveries() {
                         <p>{mydelivery.product.price}</p>
                         <p>{mydelivery.dropoff_location}</p>
                         <p>{mydelivery.pickup_location}</p>
+                        <p>{mydelivery.product.quantity}</p>
                     </div>
                 );
             })}

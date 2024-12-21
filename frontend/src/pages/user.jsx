@@ -1,10 +1,31 @@
 import { useVerified } from '../context/verifiedcontext';
 import { useState } from 'react';
 import '../styles/user.css';
+import axios from 'axios';
+import { useEffect } from 'react';
+
 function User(){
     const { verified } = useVerified();
     const [stripeCustomerId, setStripeCustomerId] = useState(localStorage.getItem('stripe_customer_id') || '');
+    const [credit, setCredit] = useState(0);
 
+    useEffect(() => {
+        const fetchCredit = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/backend1/credit/', {
+                    headers: {
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                }, user: localStorage.getItem('user')
+            })  
+            console.log(response.data)
+            setCredit(response.data.credit)
+        } catch (error) {
+            console.error('Error fetching credit:', error);
+        }
+    }
+    
+    fetchCredit()
+    }, [])
     const handleStripeCustomerIdChange = (e) => {
         setStripeCustomerId(e.target.value);
         localStorage.setItem('stripe_customer_id', e.target.value);
@@ -20,6 +41,7 @@ function User(){
             <p>Page in development</p>
             <p>Username: {localStorage.getItem('user')}</p>
             <p>Email: {localStorage.getItem('email')}</p>
+            <p>Credit: {credit}</p>
             <div className="stripe-customer-id">
                 <p>Stripe Customer ID:</p>
                 <input 

@@ -16,6 +16,8 @@ class Product(models.Model):
     dropoff_location = models.CharField(max_length=100, default='Balliol College')
     pickup_location = models.CharField(max_length=100, default='Cornmarket Street')
     authentication_code = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=1)
+    
     class Meta:
         ordering = ['-created_at']
 
@@ -56,6 +58,7 @@ def create_user_verification(sender, instance, created, **kwargs):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     stripe_customer_id = models.CharField(max_length=100, blank=True, null=True)
+    credit = models.IntegerField(default=0)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

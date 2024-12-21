@@ -17,7 +17,7 @@ from rest_framework import viewsets
 from .serializers import ProductSerializer, ActiveDeliverySerializer, MydeliveriesSerializer, OpenDeliveriesSerializer, MyOrdersSerializer
 from rest_framework.decorators import action
 from rest_framework import permissions
-from .models import Verification, Mydeliveries, ActiveDelivery, OpenDeliveries
+from .models import Verification, Mydeliveries, ActiveDelivery, OpenDeliveries, Profile
 @api_view(['POST'])
 def register_user(request):
     try:
@@ -157,6 +157,7 @@ def sell_product(request):
         dropoff_location = request.data.get('dropoff_location')
         pickup_location = request.data.get('pickup_location')
         authentication_code = random.randint(1000, 9999)
+        quantity = request.data.get('quantity')
 
         Product.objects.create(
             seller=seller,
@@ -165,7 +166,8 @@ def sell_product(request):
             price=price,
             dropoff_location=dropoff_location,
             pickup_location=pickup_location,
-            authentication_code=authentication_code
+            authentication_code=authentication_code,
+            quantity=quantity
         )
         return Response({'message': 'Product listed successfully'}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -223,6 +225,10 @@ def accept_delivery(request):
     Mydeliveries.objects.create(user=user, product_id=product_id)
     ActiveDelivery.objects.create(product_id=product_id, deliverer=user)
     OpenDeliveries.objects.filter(product_id=product_id).delete()
+    product = Product.objects.get(id=product_id)
+    profile = Profile.objects.get(user=user)
+    profile.credit = profile.credit + product.price*product.quantity
+    profile.save()
     return Response({'message': 'Delivery accepted'}, status=status.HTTP_200_OK)
 
 class MydeliveriesViewSet(viewsets.ModelViewSet):
@@ -299,4 +305,16 @@ def delivery_authentication(request):
         return Response(
             {'error': 'Invalid code format'},
             status=status.HTTP_400_BAD_REQUEST
+        )
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def credit(request):
+    try:
+        profile = Profile.objects.get(user=request.user)
+        return Response({'credit': profile.credit}, status=status.HTTP_200_OK)
+    except Profile.DoesNotExist:
+        return Response(
+            {'error': 'Profile not found'}, 
+            status=status.HTTP_404_NOT_FOUND
         )
