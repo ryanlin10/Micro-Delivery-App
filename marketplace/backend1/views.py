@@ -173,6 +173,11 @@ def sell_product(request):
             buyer_latitude=buyer_latitude,
             buyer_longitude=buyer_longitude
         )
+        profile = Profile.objects.get(user=seller)
+        if profile.credit < int(price)*int(quantity):
+            return Response({'error': 'Insufficient credit, please add more money to your account'}, status=status.HTTP_400_BAD_REQUEST)
+        profile.credit = profile.credit - int(price)*int(quantity)
+        profile.save()
         return Response({'message': 'Product listed successfully'}, status=status.HTTP_200_OK)
     except Exception as e:
         print(f"Error listing product: {str(e)}")
@@ -320,4 +325,37 @@ def credit(request):
         return Response(
             {'error': 'Profile not found'}, 
             status=status.HTTP_404_NOT_FOUND
+        )
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_credit(request):
+    try:
+        credit = request.data.get('credit')
+        if not isinstance(credit, (int, float)) or credit <= 0:
+            return Response(
+                {'error': 'Invalid credit amount'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        profile = Profile.objects.get(user=request.user)
+        profile.credit = profile.credit + credit
+        profile.save()
+        
+        return Response(
+            {
+                'message': 'Credit added successfully',
+                'new_balance': profile.credit
+            }, 
+            status=status.HTTP_200_OK
+        )
+    except Profile.DoesNotExist:
+        return Response(
+            {'error': 'Profile not found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    except Exception as e:
+        return Response(
+            {'error': str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )

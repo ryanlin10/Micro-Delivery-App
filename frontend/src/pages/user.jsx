@@ -23,7 +23,7 @@ function User(){
             console.error('Error fetching credit:', error);
         }
     }
-    
+
     fetchCredit()
     }, [])
     const handleStripeCustomerIdChange = (e) => {
@@ -34,7 +34,23 @@ function User(){
     const handleSaveStripeCustomerId = () => {
         localStorage.setItem('stripe_customer_id', stripeCustomerId);
     }
-
+    const handleAddCredit = async () => {
+        try {
+            const response = await axios.post('http://localhost:8000/backend1/add_credit/', 
+                { credit: 1000 },
+                {
+                    headers: {
+                        'Authorization': `Token ${localStorage.getItem('token')}`
+                    }
+                }
+            );
+            if (response.data.new_balance) {
+                setCredit(response.data.new_balance);
+            }
+        } catch (error) {
+            console.error('Error adding credit:', error);
+        }
+    }
     return(
         <div>
             <h1>User Profile</h1>
@@ -42,17 +58,7 @@ function User(){
             <p>Username: {localStorage.getItem('user')}</p>
             <p>Email: {localStorage.getItem('email')}</p>
             <p>Credit: {credit}</p>
-            <div className="stripe-customer-id">
-                <p>Stripe Customer ID:</p>
-                <input 
-                    type="text"
-                    value={stripeCustomerId}
-                    onChange={handleStripeCustomerIdChange}
-                    name="stripe_customer_id"
-                    placeholder="Enter Stripe Customer ID"
-                />
-                <button onClick={handleSaveStripeCustomerId}>Save</button>
-            </div>
+            <button onClick={handleAddCredit}>Add Credit</button>
             <a href="/verify" style={{display: !verified ? 'block' : 'none'}}> Complete your user verification process in order to start selling items</a>
             <p style={{display: verified ? 'block' : 'none'}}>Your email is verified, you can now sell items</p>
         </div>
