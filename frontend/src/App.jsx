@@ -20,7 +20,7 @@ import { useVerified } from './context/verifiedcontext';
 import Mydeliveries from './pages/mydeliveries';
 import axios from 'axios';
 import ActiveDelivery from './pages/active_delivery';
-
+import MyOrders from './pages/my_orders';
 function App(){
   return(
     <AuthProvider>
@@ -76,6 +76,7 @@ function AppContent() {
             <Route path="/verify" element={<Verify />} />
             <Route path="/mydeliveries" element={<ProtectedRoute><><AuthNavbar /><Mydeliveries /></></ProtectedRoute>} />
             <Route path="/active-delivery" element={<ProtectedRoute><><AuthNavbar /><ActiveDelivery /></></ProtectedRoute>} /> {/*Dynamic route for accepting delivery*/}
+            <Route path="/myorders" element={<ProtectedRoute><><AuthNavbar /><MyOrders /></></ProtectedRoute>} />
           </Routes>
         </div>
         </BrowserRouter>

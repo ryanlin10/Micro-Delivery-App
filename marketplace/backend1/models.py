@@ -15,21 +15,13 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     dropoff_location = models.CharField(max_length=100, default='Balliol College')
     pickup_location = models.CharField(max_length=100, default='Cornmarket Street')
-    
+    authentication_code = models.IntegerField(default=0)
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.name} (Sold by {self.seller.username})"
 
-# If you want to track purchases, add this model:
-class Purchase(models.Model):
-    buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchases')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='buyers')
-    purchase_date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.buyer.username} bought {self.product.name}"
     
 
 class Verification(models.Model):

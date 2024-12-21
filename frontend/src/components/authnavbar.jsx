@@ -23,8 +23,12 @@ function AuthNavbar() {
             </div>
             <Link to="/User">User Profile</Link>
             <div className="navbar-links">
-                
-
+                <Link 
+                    to="/myorders"
+                    className={location.pathname === '/myorders' ? 'active' : ''}
+                >
+                    My Orders
+                </Link>
                 <Link 
                     to="/marketplace"
                     className={location.pathname === '/marketplace' ? 'active' : ''}

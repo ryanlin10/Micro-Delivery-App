@@ -14,7 +14,7 @@ from django.utils.crypto import get_random_string
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from rest_framework import viewsets
-from .serializers import ProductSerializer, ActiveDeliverySerializer, MydeliveriesSerializer, OpenDeliveriesSerializer
+from .serializers import ProductSerializer, ActiveDeliverySerializer, MydeliveriesSerializer, OpenDeliveriesSerializer, MyOrdersSerializer
 from rest_framework.decorators import action
 from rest_framework import permissions
 from .models import Verification, Mydeliveries, ActiveDelivery, OpenDeliveries
@@ -144,6 +144,8 @@ def send_verification_email(request):
             'error': 'Failed to send email'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+import random
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def sell_product(request):
@@ -154,6 +156,7 @@ def sell_product(request):
         price = request.data.get('price')
         dropoff_location = request.data.get('dropoff_location')
         pickup_location = request.data.get('pickup_location')
+        authentication_code = random.randint(1000, 9999)
 
         Product.objects.create(
             seller=seller,
@@ -161,7 +164,8 @@ def sell_product(request):
             description=description,
             price=price,
             dropoff_location=dropoff_location,
-            pickup_location=pickup_location
+            pickup_location=pickup_location,
+            authentication_code=authentication_code
         )
         return Response({'message': 'Product listed successfully'}, status=status.HTTP_200_OK)
     except Exception as e:
@@ -243,6 +247,20 @@ class ActiveDeliveryViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Only return deliveries where the current user is the deliverer
         return ActiveDelivery.objects.filter(deliverer=self.request.user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
+class MyOrdersViewSet(viewsets.ModelViewSet):
+    serializer_class = MyOrdersSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Product.objects.all()
+
+    def get_queryset(self):
+        # Only return the orders of the current user
+        return Product.objects.filter(seller=self.request.user)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

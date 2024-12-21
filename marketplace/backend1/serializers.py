@@ -13,7 +13,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'seller', 'created_at', 'dropoff_location', 'pickup_location']
+        fields = ['id', 'name', 'description', 'price', 'seller', 'created_at', 'dropoff_location', 'pickup_location', 'authentication_code']
 
 class ActiveDeliverySerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
@@ -36,3 +36,10 @@ class OpenDeliveriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = OpenDeliveries
         fields = ['id', 'product', 'created_at']
+
+class MyOrdersSerializer(serializers.ModelSerializer):
+    seller = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'seller', 'created_at', 'dropoff_location', 'pickup_location', 'authentication_code']
