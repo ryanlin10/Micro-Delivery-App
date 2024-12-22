@@ -19,8 +19,8 @@ function MyOrders() {
         fetchMyOrders();
     }, [url, token]);
 
-    const handleAcceptDelivery = async (id) => {
-      navigate('/tracking')
+    const handleTrackDelivery = async (id) => {
+      navigate(`/tracking/${id}`);
     };
 
     return (
@@ -36,7 +36,7 @@ function MyOrders() {
                     <p>Dropoff Location: {order.dropoff_location}</p>
                     <p>Status: {order.status}</p>
                     {order.status === 'accepted' && (
-                        <button onClick={() => handleAcceptDelivery(order.id)}>Track Delivery</button>
+                        <button onClick={() => handleTrackDelivery(order.id)}>Track Delivery</button>
                     )}
                 </div>
             ))}

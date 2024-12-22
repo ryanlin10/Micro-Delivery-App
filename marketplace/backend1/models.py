@@ -67,6 +67,8 @@ class Profile(models.Model):
     stripe_customer_id = models.CharField(max_length=100, blank=True, null=True)
     credit = models.FloatField(default=0)
     delivering_status = models.BooleanField(default=False)
+    latitude = models.FloatField(default=0)
+    longitude = models.FloatField(default=0)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

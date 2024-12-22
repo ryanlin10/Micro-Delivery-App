@@ -10,7 +10,6 @@ function ActiveDelivery() {
     const token = localStorage.getItem('token');
     const [delivering, setDelivering] = useState(false);
 
-
     useEffect(() => {
         const token = localStorage.getItem('token');
         axios
@@ -21,6 +20,18 @@ function ActiveDelivery() {
                 setDeliveries(response.data);
                 setDelivering(response.data.length > 0);
                 setLoading(false);
+
+                // If delivering is active, start location updates
+                if (response.data.length > 0) {
+                    // Initial location update
+                    getAndSendLocation();
+                    
+                    // Set up interval for location updates every 10 seconds
+                    const intervalId = setInterval(getAndSendLocation, 10000);
+                    
+                    // Clean up interval on unmount
+                    return () => clearInterval(intervalId);
+                }
             })
             .catch(err => {
                 setError(err.message);
@@ -28,11 +39,36 @@ function ActiveDelivery() {
             });
     }, []);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    const getAndSendLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    console.log('Deliverer location:', latitude, longitude);
+
+                    // Send location to backend
+                    axios.post('http://localhost:8000/backend1/update-deliverer-location/', {
+                        latitude,
+                        longitude
+                    }, {
+                        headers: { Authorization: `Token ${token}` }
+                    }).then(response => {
+                        console.log('Location updated:', response.data);
+                    }).catch(error => {
+                        console.error('Error updating location:', error);
+                    });
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                }
+            );
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+    };
 
     const handleAcceptDelivery = async (e, delivery) => {
-        e.preventDefault(); // Prevent default form submission
+        e.preventDefault();
         const token = localStorage.getItem('token');
         const user = localStorage.getItem('user');
         try {
@@ -50,7 +86,6 @@ function ActiveDelivery() {
 
             if (response.data.message === 'success') {
                 alert('Delivery accepted');
-                // Optionally, update the state to remove the completed delivery
                 setDeliveries(deliveries.filter(d => d.id !== delivery.id));
             } else {
                 alert('Delivery failed');
@@ -60,12 +95,13 @@ function ActiveDelivery() {
             alert('An error occurred while completing the delivery');
         }
     };
-    
-
 
     const handleChange = (e) => {
         setCode(e.target.value);
     };
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
         <div className="active-delivery">

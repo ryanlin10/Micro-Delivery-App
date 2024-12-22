@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import register_user, login_user, verify_token, send_verification_email, sell_product, ProductViewSet, verification_status,accept_delivery, ActiveDeliveryViewSet, MydeliveriesViewSet, OpenDeliveriesViewSet, MyOrdersViewSet, delivery_authentication, credit, add_credit
+from .views import register_user, login_user, verify_token, send_verification_email, sell_product, ProductViewSet, verification_status,accept_delivery, ActiveDeliveryViewSet, MydeliveriesViewSet, OpenDeliveriesViewSet, MyOrdersViewSet, delivery_authentication, credit, add_credit, deliverer_location, update_deliverer_location
 from rest_framework import routers
 
 router = routers.DefaultRouter()
@@ -19,5 +19,7 @@ urlpatterns = [
     path('delivery_authentication/', delivery_authentication, name='delivery-authentication'),
     path('credit/', credit, name='credit'),
     path('add_credit/', add_credit, name='add-credit'),
+    path('deliverer-location/', deliverer_location, name='deliverer-location'),
+    path('update-deliverer-location/', update_deliverer_location, name='update-deliverer-location'),
     path('', include(router.urls)),
 ]

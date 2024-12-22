@@ -274,7 +274,7 @@ def accept_delivery(request):
         profile = Profile.objects.get(user=user)
         profile.delivering_status = True
         profile.deliverer = user
-        
+
         profile.save()
 
         return Response({'message': 'Delivery accepted'}, status=status.HTTP_200_OK)
@@ -415,3 +415,44 @@ def add_credit(request):
             {'error': str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def deliverer_location(request):
+    try:
+        # Get product ID from URL parameters
+        product_id = request.GET.get('product_id')
+        if not product_id:
+            return Response({'error': 'Product ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get the product
+        product = Product.objects.get(id=product_id)
+        
+        # Get the active delivery for this product
+        active_delivery = ActiveDelivery.objects.get(product=product)
+        
+        # Get the deliverer's profile
+        deliverer_profile = Profile.objects.get(user=active_delivery.deliverer)
+        
+        return Response({
+            'latitude': deliverer_profile.latitude,
+            'longitude': deliverer_profile.longitude
+        }, status=status.HTTP_200_OK)
+        
+    except Product.DoesNotExist:
+        return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+    except ActiveDelivery.DoesNotExist:
+        return Response({'error': 'No active delivery found'}, status=status.HTTP_404_NOT_FOUND)
+    except Profile.DoesNotExist:
+        return Response({'error': 'Deliverer profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_deliverer_location(request):
+    latitude = request.data.get('latitude')
+    longitude = request.data.get('longitude')
+    profile = Profile.objects.get(user=request.user)
+    profile.latitude = latitude
+    profile.longitude = longitude
+    profile.save()
+    return Response({'message': 'Location updated'}, status=status.HTTP_200_OK)

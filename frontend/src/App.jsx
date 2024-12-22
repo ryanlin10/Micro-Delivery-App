@@ -79,7 +79,7 @@ function AppContent() {
             <Route path="/mydeliveries" element={<ProtectedRoute><><AuthNavbar /><Mydeliveries /></></ProtectedRoute>} />
             <Route path="/active-delivery" element={<ProtectedRoute><><AuthNavbar /><ActiveDelivery /></></ProtectedRoute>} /> {/*Dynamic route for accepting delivery*/}
             <Route path="/myorders" element={<ProtectedRoute><><AuthNavbar /><MyOrders /></></ProtectedRoute>} />
-            <Route path="/tracking" element={<Tracking />} />
+            <Route path="/tracking/:id" element={<Tracking />} />
           </Routes>
         </div>
         </BrowserRouter>

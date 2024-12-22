@@ -109,7 +109,7 @@ function Marketplace(){
             setOpenDeliveries(prev => prev.filter(delivery => delivery.product.id !== productId));
             
             // Redirect to active deliveries page
-            navigate('/active-deliveries');
+            navigate('/active-delivery');
         } catch (error) {
             console.error('Error accepting delivery:', error);
             setMessage(error.response?.data?.error || 'Failed to accept delivery');
