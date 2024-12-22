@@ -47,4 +47,4 @@ class MyOrdersSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'seller', 'created_at', 'dropoff_location', 'pickup_location', 'authentication_code', 'status']
+        fields = ['id', 'name', 'description', 'price', 'seller', 'created_at', 'dropoff_location', 'pickup_location_name', 'authentication_code', 'status']

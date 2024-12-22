@@ -14,7 +14,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     dropoff_location = models.CharField(max_length=100, default='Balliol College')
-    pickup_location = models.CharField(max_length=100, default='Cornmarket Street')
+    pickup_location_name = models.CharField(max_length=100, default='Cornmarket Street')
     authentication_code = models.IntegerField(default=0)
     quantity = models.IntegerField(default=1)
     buyer_latitude = models.DecimalField(max_digits=100, decimal_places=20, null=True, blank=True, default=None)
@@ -23,6 +23,7 @@ class Product(models.Model):
     pickup_latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     pickup_longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     deliverer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='delivered_products', null=True, blank=True)
+    pickup_location = models.CharField(max_length=100, null=True, blank=True)
     dropoff_coordinates = models.CharField(max_length=100, null=True, blank=True)
     class Meta:
         ordering = ['-created_at']

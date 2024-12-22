@@ -161,6 +161,8 @@ def sell_product(request):
         quantity = request.data.get('quantity')
         buyer_latitude = request.data.get('buyer_latitude')
         buyer_longitude = request.data.get('buyer_longitude')
+        dropoff_coordinates = request.data.get('dropoff_coordinates')
+        pickup_location_name = request.data.get('pickup_location_name')
         delivery_fee = float(price)*float(quantity)*0.1
         commission = float(price)*float(quantity)*0.05
 
@@ -191,7 +193,9 @@ def sell_product(request):
             authentication_code=authentication_code,
             quantity=quantity,
             buyer_latitude=buyer_latitude,
-            buyer_longitude=buyer_longitude
+            buyer_longitude=buyer_longitude,
+            dropoff_coordinates=dropoff_coordinates,
+            pickup_location_name=pickup_location_name
         )
 
        

@@ -17,7 +17,7 @@ function Sell() {
         pickup_location_name: '',
         dropoff_location: '',
         pickup_location: '',
-        dropoff_coordinates: ''
+
     });
     const [message, setMessage] = useState(null);
     const navigate = useNavigate();
@@ -32,7 +32,7 @@ function Sell() {
         lng: coordinates.longitude || -122.4194
     });
 
-    const { name, description, price, quantity, dropoff_location, pickup_location} = formData;
+    const { name, description, price, quantity, dropoff_location, pickup_location, pickup_location_name, dropoff_coordinates} = formData;
     useEffect(() => {
         if (verified === false) {
             setMessage('You need to verify your email to sell items');
@@ -92,6 +92,8 @@ function Sell() {
                 price,
                 quantity,
                 dropoff_location,
+                dropoff_coordinates,
+                pickup_location_name,
                 pickup_location,
                 buyer_latitude: coordinates.latitude,
                 buyer_longitude: coordinates.longitude

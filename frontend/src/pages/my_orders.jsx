@@ -32,7 +32,7 @@ function MyOrders() {
                     <p>{order.description}</p>
                     <p>Price: {order.price}</p>
                     <p>Authentication Code: {order.authentication_code}</p>
-                    <p>Pickup Location: {order.pickup_location}</p>
+                    <p>Pickup Location: {order.pickup_location_name}</p>
                     <p>Dropoff Location: {order.dropoff_location}</p>
                     <p>Status: {order.status}</p>
                     {order.status === 'accepted' && (
