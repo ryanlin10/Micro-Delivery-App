@@ -9,11 +9,13 @@ function ActiveDelivery() {
     const [code, setCode] = useState('');
     const token = localStorage.getItem('token');
     const [delivering, setDelivering] = useState(false);
-
+    const url1 = 'http://localhost:8000/backend1/active-delivery/';
+    const url2 = 'http://localhost:8000/backend1/update-deliverer-location/';
+    const url3 = 'http://localhost:8000/backend1/delivery_authentication/';
     useEffect(() => {
         const token = localStorage.getItem('token');
         axios
-            .get('http://localhost:8000/backend1/active-delivery/', {
+            .get(url1, {
                 headers: { Authorization: `Token ${token}` }
             })
             .then(response => {
@@ -47,7 +49,7 @@ function ActiveDelivery() {
                     console.log('Deliverer location:', latitude, longitude);
 
                     // Send location to backend
-                    axios.post('http://localhost:8000/backend1/update-deliverer-location/', {
+                    axios.post(url2, {
                         latitude,
                         longitude
                     }, {
@@ -73,7 +75,7 @@ function ActiveDelivery() {
         const user = localStorage.getItem('user');
         try {
             const response = await axios.post(
-                'http://localhost:8000/backend1/delivery_authentication/',
+                url3,
                 {
                     code: code,
                     product_id: delivery.product.id,

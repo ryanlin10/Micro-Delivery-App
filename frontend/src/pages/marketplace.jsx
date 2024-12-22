@@ -13,6 +13,7 @@ function Marketplace(){
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
     const url = 'http://localhost:8000/backend1/accept-delivery/';
+    const url1 = 'http://localhost:8000/backend1/open-deliveries/';
 
     // Function to calculate distance between two points
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -52,7 +53,7 @@ function Marketplace(){
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/backend1/open-deliveries/', {
+                const response = await axios.get(url1, {
                     headers: {
                         'Authorization': `Token ${localStorage.getItem('token')}`
                     }

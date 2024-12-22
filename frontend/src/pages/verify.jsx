@@ -11,12 +11,13 @@ function Verify() {
     const [verificationinput, setVerificationInput] = useState('');
     const [clicked, setClicked] = useState(false);
     const { setVerified } = useVerified();
-    const verification_url = 'http://localhost:8000/backend1/verification-status/';
+    const url1 = 'http://localhost:8000/backend1/verification-status/';
+    const url2 = 'http://localhost:8000/backend1/send-verification-email/';
     const handleSubmit = async (e) => {
         e.preventDefault();
         setClicked(true);
         try {
-            const response = await axios.post('http://localhost:8000/backend1/send-verification-email/', { email });
+            const response = await axios.post(url2, { email });
             setMessage(response.data.message);
             setVerificationCode(response.data.verification_code);
      
@@ -29,7 +30,7 @@ function Verify() {
     const handleVerify = async () => {
         if (verificationCode === verificationinput) {
             try {
-                await axios.post(verification_url, { user: localStorage.getItem('user'), email, verification_status: 'verified' }, {
+                await axios.post(url1, { user: localStorage.getItem('user'), email, verification_status: 'verified' }, {
                     headers: {
                         'Authorization': `Token ${localStorage.getItem('token')}`
                     }

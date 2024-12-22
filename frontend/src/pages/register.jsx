@@ -12,7 +12,7 @@ function Register() {
         email: '',
         password: ''
     });
-
+    const url = 'http://localhost:8000/backend1/register/';
     const { username, email, password } = formData;
 
     const handleChange = (e) => {
@@ -26,7 +26,7 @@ function Register() {
         e.preventDefault();
         
         try {
-            const response = await axios.post('http://localhost:8000/backend1/register/', {
+            const response = await axios.post(url, {
                 username,
                 email,
                 password

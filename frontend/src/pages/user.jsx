@@ -8,11 +8,12 @@ function User(){
     const { verified } = useVerified();
     const [stripeCustomerId, setStripeCustomerId] = useState(localStorage.getItem('stripe_customer_id') || '');
     const [credit, setCredit] = useState(0);
-
+    const url1 = 'http://localhost:8000/backend1/credit/';
+    const url2 = 'http://localhost:8000/backend1/add_credit/';
     useEffect(() => {
         const fetchCredit = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/backend1/credit/', {
+                const response = await axios.get(url1, {
                     headers: {
                     'Authorization': `Token ${localStorage.getItem('token')}`
                 }, user: localStorage.getItem('user')
@@ -36,7 +37,7 @@ function User(){
     }
     const handleAddCredit = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/backend1/add_credit/', 
+            const response = await axios.post(url2, 
                 { credit: 1000 },
                 {
                     headers: {

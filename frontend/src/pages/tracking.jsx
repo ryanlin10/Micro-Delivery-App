@@ -9,7 +9,7 @@ function Tracking() {
     const [error, setError] = useState(null);
     const [key, setKey] = useState(0);
     const [distance, setDistance] = useState(null);
-
+    const url1 = 'http://localhost:8000/backend1/deliverer-location/';
     const mapStyles = {
         height: '400px',
         width: '100%',
@@ -101,7 +101,7 @@ function Tracking() {
         const fetchDelivererLocation = async () => {
             try {
                 const productId = window.location.pathname.split('/')[2];
-                const response = await axios.get('http://localhost:8000/backend1/deliverer-location/', {
+                const response = await axios.get(url1, {
                     headers: {
                         'Authorization': `Token ${localStorage.getItem('token')}`
                     },
