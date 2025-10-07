@@ -219,7 +219,7 @@ function Sell() {
                     </div>
                     <h4>Select Item Dropoff Location:</h4>
                     <div className="map-container">
-                        <LoadScript googleMapsApiKey="AIzaSyAlRa-IrhCYiCJKReDOHsEspQffGMY2DtU">
+                        <LoadScript googleMapsApiKey="API Key">
                             <GoogleMap
                                 mapContainerStyle={mapStyles}
                                 zoom={17}
