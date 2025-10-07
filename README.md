@@ -2,7 +2,7 @@
 
 A full-stack micro-delivery application that connects sellers, buyers, and deliverers in a local marketplace. Built with React frontend and Django REST API backend.
 
-## 🚀 Features
+## Features
 
 - **User Authentication & Verification**: Secure user registration with email verification
 - **Marketplace**: Browse and sell products with location-based delivery
@@ -12,7 +12,7 @@ A full-stack micro-delivery application that connects sellers, buyers, and deliv
 - **Credit System**: Built-in payment system for transactions
 - **Responsive Design**: Modern UI with React and styled-components
 
-## 🏗️ Architecture
+## Architecture
 
 ### Frontend (React)
 - **Location**: `/frontend/`
@@ -37,14 +37,14 @@ A full-stack micro-delivery application that connects sellers, buyers, and deliv
   - Email verification system
   - Media file handling
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Node.js (v14 or higher)
 - Python 3.8+
 - pip (Python package manager)
 - Git
 
-## 🛠️ Installation
+## Installation
 
 ### 1. Clone the Repository
 ```bash
@@ -98,7 +98,7 @@ npm start
 
 The frontend will be available at `http://localhost:3000`
 
-## 🔧 Configuration
+## Configuration
 
 ### Backend Configuration
 - Update `marketplace/settings.py` with your email settings for verification
@@ -109,7 +109,7 @@ The frontend will be available at `http://localhost:3000`
 - Update API endpoints in components if backend URL changes
 - Configure environment variables for different deployment environments
 
-## 📱 Usage
+## Usage
 
 ### For Sellers
 1. Register and verify your email
@@ -129,7 +129,7 @@ The frontend will be available at `http://localhost:3000`
 3. Navigate to pickup and dropoff locations
 4. Update delivery status and complete orders
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 Micro-Delivery-App/
@@ -170,7 +170,7 @@ Micro-Delivery-App/
 - `GET /backend1/my-deliveries/` - Get user's deliveries
 - `PUT /backend1/update-delivery-status/` - Update delivery status
 
-## 🚀 Deployment
+## Deployment
 
 ### Backend Deployment
 1. Set up a production database (PostgreSQL recommended)
@@ -184,7 +184,7 @@ Micro-Delivery-App/
 2. Deploy to platforms like Vercel, Netlify, or AWS S3
 3. Configure environment variables for API endpoints
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
@@ -192,24 +192,16 @@ Micro-Delivery-App/
 4. Push to the branch: `git push origin feature-name`
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👥 Authors
+## Authors
 
 - **Ryan Lin** - *Initial work* - [ryanlin10](https://github.com/ryanlin10)
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Django REST Framework for the robust API framework
 - React community for the excellent frontend ecosystem
 - Open source contributors for various packages used
-
-## 📞 Support
-
-If you have any questions or need help, please open an issue on GitHub or contact the maintainers.
-
----
-
-**Note**: This is a development version. For production deployment, ensure proper security configurations, environment variables, and database setup.
